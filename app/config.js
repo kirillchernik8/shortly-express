@@ -40,5 +40,5 @@ db.knex.schema.hasTable('clicks').then(function(exists) {
 // Add additional schema definitions below
 /************************************************************/
 
-
+//TODO: Create a table for users;: username and password;
 module.exports = db;

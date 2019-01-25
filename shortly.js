@@ -75,7 +75,10 @@ function(req, res) {
 /************************************************************/
 // Write your authentication routes here
 /************************************************************/
-
+//app.get('/signup', () => {}) // render signup
+//app.get('/signin', () => {}) // render signin
+//app.post('/signup', () => {}) // render signup
+//app.post('/signin', () => {}) // render signin
 
 
 /************************************************************/
