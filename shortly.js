@@ -81,7 +81,12 @@ app.get('/signup', (req, res) => {
 app.get('/signin', (req, res) => {
   res.render('login');
 });
-//app.post('/signup', () => {}) // render signup
+app.post('/signup', (req, res) => {
+  var username = req.body.username; 
+  var password = req.body.password;
+
+  
+}) // render signup
 //app.post('/signin', () => {}) // render signin
 
 
