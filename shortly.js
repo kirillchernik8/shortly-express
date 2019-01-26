@@ -10,6 +10,8 @@ var User = require('./app/models/user');
 var Links = require('./app/collections/links');
 var Link = require('./app/models/link');
 var Click = require('./app/models/click');
+var session = require('express-session');
+var cookieParser = require('cookie-parser');
 
 var app = express();
 
@@ -22,12 +24,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 
+app.use(cookieParser('shhh, very secret'));
+app.use(session());
 
 app.get('/', 
 function(req, res) {
   res.render('index');
 });
-
 app.get('/create', 
 function(req, res) {
   res.render('index');
@@ -85,7 +88,7 @@ app.post('/signup', (req, res) => {
   var un = req.body.username; 
   var pw = req.body.password;
 
-  new User({username:un}).fetch().then(function(found) {
+  new User({username:un, password: pw}).fetch().then(function(found) {
     if(found){
       console.log('this username is taken');
       res.send(409);
@@ -104,7 +107,44 @@ app.post('/signup', (req, res) => {
 })
 
 // render signin
-//app.post('/signin', () => {}) // render signin
+app.post('/login', (req, res) => {
+  var un = req.body.username;
+  var pw = req.body.password;
+  var hashedPw;
+  bcrypt.hash(pw, null, null, (err, hash) => {
+    hashedPw = hash;
+  });
+
+  new User({username:un, password: pw}).fetch().then(function(found) {
+    if(found){
+      bcrypt.compare(pw, hashedPw, ((err, res)=> {
+        if (err) {
+          console.log('Error: ', err);
+          res.redirect('/');
+        } else {
+          console.log('Login success!');
+          // res.redirect('/');
+        }
+      }))
+    } else {
+      console.log('user not found');
+      res.redirect('/');
+    }
+  })  
+
+  // var userObj = db.users.findOne({ username: un, password: hashedPw});
+  // if (userObj) {
+  //   req.session.regenerate(function () {
+  //     req.session.user = userObj.username;
+  //     console.log('Login successful!');
+  //     res.redirect('/');
+  //   });
+  // } else {
+  //   console.log('login failed. try again!');
+  //   res.redirect('login');
+  // }
+
+})
 
 
 /************************************************************/
