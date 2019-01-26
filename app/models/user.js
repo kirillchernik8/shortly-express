@@ -9,11 +9,7 @@ var User = db.Model.extend({
   hasTimestamps: true,
   initialize: function() {
     this.on('creating', function (model, attrs, options) {
-      bcrypt.hash(model.get('password'), null).then((hash) => {
-        model.set('password', hash);
-      }).catch((err) => {
-        console.log(err);
-      });
+
     });
   }
 });

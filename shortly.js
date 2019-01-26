@@ -2,7 +2,7 @@ var express = require('express');
 var util = require('./lib/utility');
 var partials = require('express-partials');
 var bodyParser = require('body-parser');
-
+var bcrypt = require('bcrypt-nodejs');
 
 var db = require('./app/config');
 var Users = require('./app/collections/users');
@@ -88,19 +88,22 @@ app.post('/signup', (req, res) => {
   new User({username:un}).fetch().then(function(found) {
     if(found){
       console.log('this username is taken');
-      res.status(409).send()
-    } else{
-      Users.create ({
-        username: un,
-        password:pw
-      }).then( () => {
-        res.redirect('/')
+      res.send(409);
+    } else {
+      bcrypt.hash(pw, null, null, (err, hash) => {
+        Users.create({
+          username: un,
+          password: hash
+        }).then(() => {
+          res.status(201);
+          res.redirect('/');
+        })
       })
     }
-  })
+  })  
+})
 
-  
-}) // render signup
+// render signin
 //app.post('/signin', () => {}) // render signin
 
 
