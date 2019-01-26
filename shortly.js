@@ -82,8 +82,22 @@ app.get('/signin', (req, res) => {
   res.render('login');
 });
 app.post('/signup', (req, res) => {
-  var username = req.body.username; 
-  var password = req.body.password;
+  var un = req.body.username; 
+  var pw = req.body.password;
+
+  new User({username:un}).fetch().then(function(found) {
+    if(found){
+      console.log('this username is taken');
+      res.status(409).send()
+    } else{
+      Users.create ({
+        username: un,
+        password:pw
+      }).then( () => {
+        res.redirect('/')
+      })
+    }
+  })
 
   
 }) // render signup
@@ -116,3 +130,13 @@ app.get('/*', function(req, res) {
 });
 
 module.exports = app;
+
+
+// User.count('username', username).then((count) =>{
+//   if(count > 0){
+//     console.log('this username is taken')
+//     res.sendStatus(409)
+//   } else {
+
+//   }
+// })
